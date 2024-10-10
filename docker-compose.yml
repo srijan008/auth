@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./.config/backend/Dockerfile
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./.env
+    volumes:
+      - backend-data:/app/data
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./client
+      dockerfile: ../.config/frontend/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./client/.env
+
+  nginx:
+    container_name: nginx
+    build:
+      context: .
+      dockerfile: ./.config/nginx/Dockerfile
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+      - backend
+
+volumes:
+  backend-data:
